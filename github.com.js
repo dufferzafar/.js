@@ -8,3 +8,6 @@ $('div.clone-url').remove();
 
 // Remove the Clone on Windows button.
 $('a.minibutton.sidebar-button:first').remove();
+
+// Show full sidebar on all pages.
+$('div.repository-with-sidebar').addClass('with-full-navigation');
