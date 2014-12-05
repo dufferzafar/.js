@@ -24,62 +24,6 @@ var GithubHeatmap = {
     HOTTEST_HUE: 0,
     MAX_CONTRIBUTION_COUNT: 20,
 
-    css: "\
-        .toggle-wrapper {\
-            float: right;\
-            position: relative;\
-            top: -3px;\
-            font-weight: normal;\
-            margin-right: 8px;\
-        }\
-        .slide-toggle {\
-            display: inline-block;\
-            vertical-align: middle;\
-            box-sizing: content-box;\
-            margin: 2px 0;\
-            padding: 0;\
-            border: none;\
-            height: 20px;\
-            width: 34px;\
-            cursor: pointer;\
-        }\
-        .slide-toggle input {\
-            display: none;\
-        }\
-        .slide-toggle input + .slide-toggle-style {\
-            position: relative;\
-            width: 100%;\
-            height: 100%;\
-            border-radius: 50px;\
-            background-color: #A3A3A3;\
-            box-shadow: 0 0 2px 0px #555 inset;\
-            transition-duration: 300ms;\
-        }\
-        .slide-toggle input + .slide-toggle-style:after {\
-            content: \"\";\
-            display: inline-block;\
-            position: absolute;\
-            left: 2px;\
-            top: 2px;\
-            height: 16px;\
-            width: 16px;\
-            border-radius: 50%;\
-            background-color: #FFF;\
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);\
-            transition-duration: 300ms;\
-        }\
-        .slide-toggle :checked + .slide-toggle-style {\
-            background-color: #72CD52;\
-            box-shadow: 0 0 2px 0px #498931 inset;\
-        }\
-        .slide-toggle :checked + .slide-toggle-style:after {\
-            left: 16px;\
-        }\
-        .calendar-graph.days-selected + rect.day {\
-            opacity: 1 !important;\
-        }\
-    ",
-
     getCssColor: function(hue, saturation, luminosity) {
         return "hsl(" + hue + ", " + saturation + "%, " + luminosity + "%)";
     },
@@ -121,28 +65,15 @@ var GithubHeatmap = {
 
         var $calDays = $(".js-calendar-graph-svg .day");
 
-        // console.log($calDays);
-
         if($calDays.length > 0 && $calendar.attr("data-heatmap") !== "heatmap") {
 
             $calendar.attr("data-heatmap", "heatmap");
-
-            var $toggle = $("<div class=\"toggle-wrapper\">Heatmap: <label class=\"slide-toggle\"><input checked=\"checked\" type=\"checkbox\"><div class=\"slide-toggle-style\"></div></label></div>", {
-            });
-
-            $toggle.find("input").on("change", function() {
-
-                GithubHeatmap.toggleHeatmap();
-            });
-
-            $("#contributions-calendar").siblings("h3").append($toggle);
 
             $calDays.each(function() {
 
                 var contributionCount = parseInt(this.getAttribute("data-count"));
 
                 if(contributionCount > 0) {
-                    // console.log(this);
                     this.setAttribute("data-fill", this.style.fill);
                     this.style.fill = GithubHeatmap.getFillColor(contributionCount);
                 }
@@ -159,25 +90,8 @@ var GithubHeatmap = {
         }
     },
 
-    toggleHeatmap: function() {
-
-        $(".js-calendar-graph-svg .day").each(function() {
-            var fill = this.getAttribute("data-fill");
-            this.setAttribute("data-fill", this.style.fill);
-            this.style.fill = fill;
-        });
-
-        $(".contrib-legend li").each(function() {
-            var fill = this.getAttribute("data-fill");
-            this.setAttribute("data-fill", $(this).css("background-color"));
-            $(this).css("background-color", fill);
-        });
-    },
-
     init: function() {
 
-        $("head").append("<style type='text/css' >" + GithubHeatmap.css + "</style>");
-        $("body").append();
         GithubHeatmap.addHeatmap();
 
         var target = document.querySelector(".site");
