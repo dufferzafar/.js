@@ -86,7 +86,10 @@ $(".collapselink").on("click", function(){
  */
 
 // Run ONLY on the homepage!
-if (window.location.hostname == 'news.ycombinator.com') {
+if (window.location.href.endsWith('/news.ycombinator.com/')) {
+
+// Add a sort button
+$('body').prepend('<div style="position:absolute; right: 22px;"><button id="sort">Sort</button>');
 
 // Helper function to move an element down
 function moveDown (current, next) {
@@ -99,36 +102,35 @@ function moveDown (current, next) {
   text.before('<tr style="height: 5px"></tr>');
 }
 
-// Keeps track if a swap took place in the loop
-var swapped;
+$('#sort').on('click', function(event) {
+    var swapped;
+    var rows = $("td.subtext");
 
-// All Items
-var rows = $("td.subtext");
+    // Standard Bubble Sort
+    do {
+        swapped = false;
 
-// Standard Bubble Sort
-do {
-    swapped = false;
+        for (var i = 0; i < rows.length - 1; i++) {
+            var currentRow = $(rows[i]).parent();
+            var nextRow = currentRow.next('tr').next('tr').next('tr');
 
-    for (var j = 0; j < rows.length - 1; j++) {
-        var currentRow = $(rows[j]).parent();
-        var nextRow = currentRow.next('tr').next('tr').next('tr');
+            var currentRowPoints = parseInt($('span', currentRow).text().split(" ")[0]);
+            var nextRowPoints = parseInt($('span', nextRow).text().split(" ")[0]);
 
-        var currentRowPoints = parseInt($('span', currentRow).text().split(" ")[0]);
-        var nextRowPoints = parseInt($('span', nextRow).text().split(" ")[0]);
+            if (isNaN(currentRowPoints)) {
+                currentRowPoints = 0;
+            }
 
-        if (isNaN(currentRowPoints)) {
-            currentRowPoints = 0;
+            if (isNaN(nextRowPoints)) {
+                nextRowPoints = 0;
+            }
+
+            if (currentRowPoints < nextRowPoints) {
+                moveDown(currentRow, nextRow);
+                swapped = true;
+            }
         }
-
-        if (isNaN(nextRowPoints)) {
-            nextRowPoints = 0;
-        }
-
-        if (currentRowPoints < nextRowPoints) {
-            moveDown(currentRow, nextRow);
-            swapped = true;
-        }
-    }
-} while ( swapped === true );
+    } while ( swapped === true );
+});
 
 }
