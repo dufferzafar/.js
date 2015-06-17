@@ -78,3 +78,57 @@ $(".collapselink").on("click", function(){
 });
 
 }
+
+/**
+ * Sort the HN Homepage
+ *
+ * Copied from: https://github.com/thejspr/hacker-news-sorter
+ */
+
+// Run ONLY on the homepage!
+if (window.location.hostname == 'news.ycombinator.com') {
+
+// Helper function to move an element down
+function moveDown (current, next) {
+  var text = current.prev('tr');
+  current.next('tr').remove();
+
+  current.insertAfter(next);
+  text.insertAfter(next);
+
+  text.before('<tr style="height: 5px"></tr>');
+}
+
+// Keeps track if a swap took place in the loop
+var swapped;
+
+// All Items
+var rows = $("td.subtext");
+
+// Standard Bubble Sort
+do {
+    swapped = false;
+
+    for (var j = 0; j < rows.length - 1; j++) {
+        var currentRow = $(rows[j]).parent();
+        var nextRow = currentRow.next('tr').next('tr').next('tr');
+
+        var currentRowPoints = parseInt($('span', currentRow).text().split(" ")[0]);
+        var nextRowPoints = parseInt($('span', nextRow).text().split(" ")[0]);
+
+        if (isNaN(currentRowPoints)) {
+            currentRowPoints = 0;
+        }
+
+        if (isNaN(nextRowPoints)) {
+            nextRowPoints = 0;
+        }
+
+        if (currentRowPoints < nextRowPoints) {
+            moveDown(currentRow, nextRow);
+            swapped = true;
+        }
+    }
+} while ( swapped === true );
+
+}
