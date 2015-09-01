@@ -85,11 +85,11 @@ $(".collapselink").on("click", function(){
  * Copied from: https://github.com/thejspr/hacker-news-sorter
  */
 
-// Run ONLY on the homepage!
-if (window.location.href.endsWith('/news.ycombinator.com/')) {
+// Don't run on item pages!
+if (window.location.pathname.indexOf('/item') != 0) {
 
 // Add a sort button
-$('body').prepend('<div style="position:absolute; right: 22px;"><button id="sort">Sort</button>');
+$('body').prepend('<div style="position:absolute; right: 22px;"><span style="vertical-align:middle;"><input type="checkbox" id="sort"></span>Sort</div>');
 
 // Helper function to move an element down
 function moveDown (current, next) {
